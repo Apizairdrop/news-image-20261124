@@ -3,14 +3,14 @@
 in one 1024x1024 PNG. Python 3.13, standard library only, no network,
 fully deterministic (same bytes on every run).
 
-Draws a dense newspaper front page, in code, from the research pack:
-a masthead naming the day, the verified main story (Huang reinstated at
-Nvidia, shares +31%, 23 Nov), a schematic world map with the stories
-plotted, 15 more lead stories in four columns, a 17-24 Nov UTC timeline,
-32 wire briefs, and a date-check footer that dates every older story
-in-line (ICJ 19 Nov, Kerch Bridge 17 Nov, BepiColombo 22 Nov, Huang and
-Iran sanctions 23 Nov). No story is dated 24 Nov unless it happened or
-was first reported on 24 Nov.
+Draws a dense newspaper front page, in code, from the research pack v2:
+a masthead naming the day, the verified main story (Nvidia rally fades
+24 Nov: NVDA -6% after +31% Mon on Huang's reinstatement, 23 Nov), a
+schematic world map with the stories plotted, 15 more lead stories in
+four columns, a 24 Nov UTC timeline, 32 wire briefs, and a date-check
+footer that dates every older story in-line (ICJ 19 Nov, COP31 22 Nov,
+Huang and FIFA hosts 23 Nov). No story is dated 24 Nov unless it
+happened or was first reported on 24 Nov.
 
 Rendering is hand-rolled: a 5x7 bitmap font drawn at several scales, a
 scanline polygon filler for the map, and a small PNG encoder. Nothing is
@@ -330,21 +330,26 @@ CONTINENTS = [
 # (lon, lat, label, label dx, label dy) - dots mark the lead stories.
 # Labels are drawn at scale 1; dx/dy keep them off the dot and off land.
 MAP_DOTS = [
-    (-115.1, 36.2, "LAS VEGAS", -64, 4),
-    (114.0, 22.5, "SHENZHEN", -20, -12),
-    (36.5, 45.3, "KERCH", -8, -12),
+    (-100.0, 38.0, "USA", -8, -12),
+    (-74.0, 4.6, "COLOMBIA", -52, 4),
+    (-88.9, 13.7, "EL SALVADOR", -58, -12),
+    (-1.0, 52.0, "UK", -4, -12),
+    (31.0, 49.0, "KYIV", -26, -12),
     (20.0, 32.1, "BENGHAZI", -10, 10),
-    (51.4, 35.7, "TEHRAN", -8, -12),
-    (30.7, 36.9, "ANTALYA", -52, -4),
-    (82.2, 26.8, "AYODHYA", -16, 12),
-    (174.8, -41.3, "WELLINGTON", -58, -12),
     (34.5, 31.5, "GAZA", 8, -12),
-    (-9.1, 38.7, "LISBON", -34, -12),
-    (93.0, 20.0, "RAKHINE", -12, -14),
-    (30.5, 50.5, "KYIV", -26, -12),
+    (46.7, 24.6, "RIYADH", -52, 4),
+    (44.2, 15.3, "ADEN", -34, 10),
     (56.5, 26.5, "HORMUZ", -8, 12),
-    (7.7, 45.0, "TURIN", -6, -12),
+    (32.8, 39.9, "ANKARA", -48, -12),
+    (25.0, -2.0, "CONGO", -12, -12),
     (-17.4, 14.7, "DAKAR", -30, 8),
+    (90.4, 23.8, "DHAKA", -12, -12),
+    (96.0, 21.9, "MYANMAR", -52, -12),
+    (106.8, -6.2, "JAKARTA", -52, 4),
+    (105.8, 21.0, "HANOI", -8, -12),
+    (116.4, 39.9, "BEIJING", -52, -12),
+    (127.0, 37.5, "SEOUL", -8, -12),
+    (139.7, 35.7, "TOKYO", -34, 4),
 ]
 
 # ---------------------------------------------------------------- content
@@ -356,126 +361,127 @@ MAP_DOTS = [
 # (12px per character); briefs wrap at 15 characters for their 190px
 # columns.
 MAIN = {
-    "kicker": "TECHNOLOGY - UNITED STATES - 23 NOV 2026",
-    "headline": ["HUANG REINSTATED AS NVIDIA CEO",
-                 "SHARES SOAR 31%"],
-    "summary": ("BOARD VOTES UNANIMOUSLY ON 23 NOV AFTER DIRECT PRESSURE "
-                "FROM PRESIDENT TRUMP. VP VANCE LEANED ON THE BOARD; "
-                "NASDAQ +6.5%, S&P +4.7%."),
-    "source": "CNN / THE HINDU BUSINESSLINE",
+    "kicker": "MARKETS - UNITED STATES - 24 NOV 2026",
+    "headline": ["NVIDIA RALLY FADES",
+                 "NVDA -6% AFTER +31%"],
+    "summary": ("NVDA -6% TUE AFTER +31% MON ON HUANG REINSTATEMENT AS CEO "
+                "ON 23 NOV AFTER TRUMP PRESSURE. NASDAQ -1.5%, S&P -0.5%, "
+                "DOW +0.9%."),
+    "source": "REUTERS / INVESTOPEDIA / CNA",
 }
 
 # (headline, summary, source + date) - leads 2..16, in research-pack order.
 LEADS = [
-    ("TRUMP HITS IRAN'S FINANCIAL LIFELINE",
-     "TREASURY HITS 25+ HOUSES; $14.7B.",
-     "TREASURY - 23 NOV"),
-    ("COP31 ENDS WITH NO DEAL IN ANTALYA",
-     "NO PACT AGREED; TALKS MAY SUSPEND.",
-     "BBC - 23-24 NOV"),
-    ("RUSSIAN WARSHIP SUNK OFF LIBYA",
-     "MERKURY SUNK; KYIV CLAIMS IT.",
-     "NAVAL NEWS - 22 NOV"),
-    ("ICJ: ROHINGYA GENOCIDE VERDICT",
-     "MYANMAR GUILTY 9-6; CASE FROM 2019.",
-     "ICJ - 19 NOV"),
-    ("TRUMP, XI AND PUTIN MEET AT APEC",
-     "FIRST TRILATERAL ON APEC SIDELINES.",
-     "APEC - 24 NOV"),
-    ("KERCH BRIDGE HIT; KYIV ANSWERS",
-     "BRIDGE STRUCK 17 NOV; 8 KILLED.",
-     "CNN - 17 NOV"),
-    ("EU UNVEILS NEW RUSSIA SANCTIONS",
-     "NEW PACKAGE; CHINA BANS DRONE PARTS.",
-     "EU COMM. - 24 NOV"),
-    ("TWO TANKERS HIT IN STRAIT OF HORMUZ",
-     "ADNOC VESSEL HIT; ONE CREW MISSING.",
-     "UKMTO - 22-23 NOV"),
-    ("BITCOIN REBOUNDS PAST $62,800",
-     "BTC +3.4% AFTER $55,100 LOW.",
-     "THESTREET - 23 NOV"),
-    ("WAYMO PULLED FROM ALL US FREEWAYS",
-     "DRIVERLESS TAXIS OFF FREEWAYS.",
-     "COMPANY - 23 NOV"),
-    ("BEPICOLOMBO REACHES MERCURY",
-     "ESA/JAXA PROBE IN MERCURY ORBIT.",
-     "ESA/JAXA - 22 NOV"),
-    ("INDIA-NEPAL RAIL LINK OPENS",
-     "MODI, NEPAL PM FLAG OFF EXPRESS.",
-     "JAGRANJOSH - 24 NOV"),
-    ("PANT 128 SETS ASIAN RECORD",
-     "PANT SCORES 128 VS NZ IN WELLINGTON.",
-     "JAGRANJOSH - 24 NOV"),
-    ("VERSTAPPEN WINS VEGAS GP",
-     "ALCARAZ INTO ATP FINAL.",
-     "SPORTS - 23 NOV"),
-    ("BANTEN FACTORY FIRE RESCUE",
-     "RESCUE CONTINUES; 34 STILL MISSING.",
-     "NEWS WIRES - 23 NOV"),
+    ("HUAWEI GUILTY ON 10 OF 12",
+     "TRADE-SECRET THEFT, BANK FRAUD.",
+     "24 NOV 20:41 UTC"),
+    ("FOUR TANKERS HIT IN HORMUZ",
+     "IRGC: MINES HIT 4 TANKERS; FIRE.",
+     "24 NOV 00:00 UTC"),
+    ("UKRAINE HITS RUSSIAN SHIPS",
+     "DRONES OFF LIBYA; CORVETTE SUNK.",
+     "REUTERS - 24 NOV"),
+    ("SENEGAL AFCON TITLE RESTORED",
+     "CAS OVERTURNS CAF; 1-0 STANDS.",
+     "REUTERS - 24 NOV"),
+    ("FIFA NAMES 2031 + 2035 HOSTS",
+     "USA + 3 HOST 2031; UK HOSTS 2035.",
+     "FIFA / AP - 23 NOV"),
+    ("ISRAEL KILLS HAMAS SECURITY",
+     "GEN. ABU NAHEL +6 KILLED IN GAZA.",
+     "REUTERS - 24 NOV"),
+    ("SAUDI PIF TOWER HIT IN RIYADH",
+     "DRONE WOUNDS 11+; 2ND IN A WEEK.",
+     "24 NOV 14:27 UTC"),
+    ("HOUTHIS 60 KM FROM ADEN",
+     "READY TO ATTACK; LINE BUILT.",
+     "24 NOV"),
+    ("COLOMBIA: HOSTAGES + CAR BOMB",
+     "25 HELD; CAR BOMB WOUNDS 23.",
+     "24 NOV"),
+    ("TURKISH HELICOPTER CRASH",
+     "AS-532 DOWN; 5 CREW KILLED.",
+     "24 NOV 19:52 UTC"),
+    ("HANOI RESTAURANT BLAST",
+     "GAS LEAK BLAST KILLS 6+.",
+     "24 NOV"),
+    ("INDONESIA VP SUCCESSION",
+     "PRABOWO NAMES 2 TO REPLACE GIBRAN.",
+     "24 NOV 02:38 UTC"),
+    ("PENTAGON REBUKES CANADA",
+     "ONLY 41.9% OF FLEET FLYABLE.",
+     "24 NOV 01:03 UTC"),
+    ("COP31 COLLAPSES, NO DEAL",
+     "LONGEST COP ENDS IN ANTALYA.",
+     "AP - SUN 22 NOV"),
+    ("ICJ: MYANMAR GUILTY",
+     "GENOCIDE VS ROHINGYA, 9-6.",
+     "ICJ - THU 19 NOV"),
 ]
 
 MARKETS = [
-    "MARKETS - 23 NOV",
-    "NASDAQ +6.5%",
-    "S&P +4.7%",
-    "GOLD $3,661",
-    "BRENT $89.34",
+    "MARKETS - TUE 24 NOV",
+    "DOW +0.9% 50,018",
+    "S&P -0.5% 7,201",
+    "NASDAQ -1.5% 23,734",
+    "NVDA -6% BTC 59.5K",
 ]
 
-# (date, label) - one tick per day, 17-24 Nov 2026.
+# (time, label) - first-reported UTC times on 24 Nov 2026.
 TIMELINE = [
-    ("17 NOV", "KERCH"),
-    ("19 NOV", "ICJ RULING"),
-    ("20 NOV", "FOIP 3.0"),
-    ("21 NOV", "BTC LOW"),
-    ("22 NOV", "BEPICOLOMBO"),
-    ("23 NOV", "HUANG +31%"),
-    ("24 NOV", "EU SANCTIONS"),
+    ("00:00", "HORMUZ"),
+    ("02:38", "JAKARTA"),
+    ("08:14", "LIBYA"),
+    ("11:40", "GAZA"),
+    ("14:27", "RIYADH"),
+    ("19:52", "ANKARA"),
+    ("20:41", "HUAWEI"),
 ]
 
-# 32 wire briefs, each at most 34 chars so it fits two lines in a
+# 32 wire briefs, each at most 30 chars so it fits two lines in a
 # five-column grid.
 BRIEFS = [
-    "TRUMP-KIM TALKS IGNORED (WSJ)",
-    "GAZA TAINTED FOR DECADES",
-    "TALIBAN ERASE WOMEN'S NAMES",
-    "IRAN SHOWS LAUNCHER",
-    "UK PM FEARS NEW IRAN STRIKE",
-    "FINLAND SUMMONS RUSSIAN ENVOY",
-    "RUSSIAN SHIP AFIRE",
-    "DRONE STRIKE IN KYIV REGION",
-    "ZAPORIZHZHIA HIT; 3 KILLED",
-    "UK BACKS WINTER TRUCE",
-    "LISBON MARCH ON COSTS",
-    "MYANMAR SLAMS ASEAN DECISION",
-    "SEOUL PICKS NEW MINISTERS",
-    "DHAKA MAY JAIL HASINA",
-    "COLOMBIA ACTS VS STARLINK",
-    "JAPAN DEFENCE BUDGET PAST 9TN",
-    "CHINA PUSHES $167B DAM",
-    "AFRICOM CHIEF TOURS W. AFRICA",
-    "220M CHRISTIANS PERSECUTED",
-    "UN SLAMS SUDAN DRONE STRIKES",
-    "MIGRANT BOAT SINKS; 4 DEAD",
-    "GHANA WIN AMPUTEE CUP",
-    "S. AFRICA EX-DEPUTY DIES",
-    "ETHIOPIA JABS 11M KIDS",
-    "ODISHA CYBER COMMAND CENTRE",
-    "FERRARI UNVEILS 296 CHALLENGE",
-    "INDIA HOCKEY BEATS NZ 1-0",
-    "FIFA PICKS 2031 HOSTS",
-    "SUPERMOON MEETS PLEIADES",
-    "DOJ MOVES TO SEIZE $1B USDC",
-    "CHAINFLIP LOSES $12.6M",
-    "ANTHROPIC STOCK FALLS 9.13%",
+    "VANCE + RUBIO MEET QATAR PM",
+    "US BLACKLISTS MEGASPEED + 6",
+    "NATO VOWS SPACE DEFENCE",
+    "ZELENSKY SEEKS 4-PARTY TALKS",
+    "ZAPORIZHZHIA HIT; 2 KILLED",
+    "7 BACK EU VISA CURBS ON RUSSIA",
+    "UN PROBE CALL ON BENGHAZI",
+    "700K+ RUSSIANS KILLED IN WAR",
+    "HAFTAR VISITS TURKEY 1ST TIME",
+    "UK SANCTIONS HOUTHIS + 4",
+    "GAZA MENINGITIS ALERT",
+    "IRAQ SEIZES KURD OILFIELDS",
+    "DR CONGO PLANE MISSING",
+    "CHINA SENTENCES SPY TO DEATH",
+    "EL CHAPO ISIDRO CAPTURED",
+    "BUKELE: 3 SOLDIERS KILLED",
+    "S. KOREA SCRAMBLES JETS",
+    "HASINA TO RETURN 16 DEC",
+    "MALAYSIA TO RETURN MIGRANTS",
+    "CHINA EASES MINERAL CURBS",
+    "SOLOMONS TO SWAP CHINA PACT",
+    "RUSSIA WARNS ESTONIA",
+    "ZAMBIA OPP. CHIEF CHARGED",
+    "DHAKA GARMENT PAY PROTEST",
+    "TAIWAN VOTES SATURDAY",
+    "NORWAY SENDS DESNA TO KYIV",
+    "S. KOREA PAYS TO CATCH CHEATS",
+    "MICROSOFT CODE RED OUTAGE",
+    "US CONFIDENCE AT 2-YEAR HIGH",
+    "HERRO 32 AS BUCKS END SKID",
+    "BITCOIN $59.5K; NOV -25%",
+    "ANTHROPIC -6.5% BELOW IPO",
 ]
 
-FOOTER_DATE = ("TUESDAY 24 NOVEMBER 2026. STORIES DATED 17-24 NOV AS MARKED: "
-               "ICJ 19 NOV, KERCH 17 NOV, BEPICOLOMBO 22 NOV, "
-               "HUANG + IRAN SANCTIONS 23 NOV.")
-FOOTER_SOURCES = ("SOURCES: CNN, BBC, WALL STREET JOURNAL, NAVAL NEWS, ICJ, US TREASURY, "
-                  "UKMTO, THE HINDU BUSINESSLINE, THESTREET, JAGRANJOSH, PANAPRESS, "
-                  "BLOOMBERG, COINGLASS.")
+FOOTER_DATE = ("TUESDAY 24 NOVEMBER 2026. STORIES DATED AS MARKED: "
+               "COP31 COLLAPSE 22 NOV; HUANG REINSTATEMENT + FIFA HOSTS "
+               "23 NOV; ICJ MYANMAR RULING 19 NOV; ALL OTHER HEADLINES "
+               "FIRST REPORTED 24 NOV 2026 (UTC TIMES SHOWN).")
+FOOTER_SOURCES = ("SOURCES: DAILY SUMMARY OF (30 STORIES, 64 SOURCES), "
+                  "REUTERS, AP, JUST SECURITY, FIFA, CAS, INVESTOPEDIA, "
+                  "CNA, UN NEWS, BBC, KYIV INDEPENDENT.")
 
 # ---------------------------------------------------------------- layout
 MX = 16            # side margin
@@ -497,7 +503,7 @@ def draw_masthead(cv):
     cv.text_at(MX, 64, "16 LEAD STORIES", 2, MUTED)
     cv.text_at(W // 2, 60, "TUESDAY, 24 NOVEMBER 2026", 3, INK,
                align="center", bold=True)
-    cv.text_at(RX, 64, "32 BRIEFS - 7 REGIONS", 2, MUTED, align="right")
+    cv.text_at(RX, 64, "32 BRIEFS - 10 REGIONS", 2, MUTED, align="right")
     cv.rule(MX, 86, CW, GOLD, 2)
 
 
